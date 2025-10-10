@@ -5,6 +5,8 @@ import Gynecologist from './Gynecologist.svg'
 import Neurologist from './Neurologist.svg'
 import Pediatricians from './Pediatricians.svg'
 import logo from './logo.png'
+import userProfile from './user-profile.png'
+import dropdownIcon from './dropdown-icon.svg'
 
 import doc1 from './doctor1.png'
 import doc2 from './doctor2.png'
@@ -24,6 +26,8 @@ import doc13 from './doctor13.png'
 export const assets = {
 
     logo,
+    userProfile,
+    dropdownIcon,
     
 }
 

@@ -1,31 +1,90 @@
-import React from 'react'
 import { assets } from '../assets/frontend_assets/assets'
-import { NavLink } from 'react-router-dom'
-
+import { NavLink, useNavigate } from 'react-router-dom'
+import React, { useState, useEffect } from 'react'
 
 export const NavBar = () => {
+
+    const [showDropdown, setShowDropdown] = useState(false)
+    const [token, setToken] = useState(localStorage.getItem('token') || null)
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        setToken('kjdskdsj')  // Test token
+    }, [])
+
     return (
-        <div className='flex items-center justify-between py-4 border-b border-gray-200'>
-            <img src={assets.logo} className='w-32' alt='logo' />
-            <ul className='flex items-center gap-8 font-medium text-gray-700'>
-                <NavLink to='/'>
-                    <li className='hover:text-primary cursor-pointer'>Home</li>
+        <div className='flex items-center justify-between py-1 mb-5 border-b border-gray-300'>
+            <NavLink to='/'>
+                <img src={assets.logo} className='w-40 cursor-pointer transition-transform hover:scale-105' alt='logo' />
+            </NavLink>
+            <ul className='hidden md:flex items-center gap-10 font-medium text-gray-600 text-sm'>
+                <NavLink to='/' className={({isActive}) => isActive ? 'text-primary' : ''}>
+                    <li className='py-1 cursor-pointer hover:text-primary transition-colors'>HOME</li>
                 </NavLink>
-                <NavLink to='/about'>
-                    <li className='hover:text-primary cursor-pointer'>About</li>
+                <NavLink to='/about' className={({isActive}) => isActive ? 'text-primary' : ''}>
+                    <li className='py-1 cursor-pointer hover:text-primary transition-colors'>ABOUT</li>
                 </NavLink>
-                <NavLink to='/doctors'>
-                    <li className='hover:text-primary cursor-pointer'>Doctors</li>
+                <NavLink to='/doctors' className={({isActive}) => isActive ? 'text-primary' : ''}>
+                    <li className='py-1 cursor-pointer hover:text-primary transition-colors'>DOCTORS</li>
                 </NavLink>
-                <NavLink to='/contact'>
-                    <li className='hover:text-primary cursor-pointer'>Contact</li>
+                <NavLink to='/contact' className={({isActive}) => isActive ? 'text-primary' : ''}>
+                    <li className='py-1 cursor-pointer hover:text-primary transition-colors'>CONTACT</li>
                 </NavLink>
             </ul>
             <div className='flex items-center gap-4'>
+                {
+                    token ?
+                    <div className='flex items-center gap-2 relative'>
+                        <img
+                            src={assets.userProfile}
+                            className='w-10 rounded-full cursor-pointer border-1 border-primary'
+                            alt='user profile'
+                        />
+                        <img
+                            src={assets.dropdownIcon}
+                            className='w-2.5 cursor-pointer'
+                            alt='dropdown'
+                            onClick={() => setShowDropdown(!showDropdown)}
+                        />
+                        {showDropdown && (
+                            <div className='absolute top-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg p-4 min-w-48 z-20'>
+                                <p
+                                    className='py-2 px-3 text-gray-600 hover:bg-gray-100 hover:text-primary rounded cursor-pointer transition-colors'
+                                    onClick={() => {
+                                        navigate('/user-profile')
+                                        setShowDropdown(false)
+                                    }}
+                                >
+                                    My profile
+                                </p>
+                                <p
+                                    className='py-2 px-3 text-gray-600 hover:bg-gray-100 hover:text-primary rounded cursor-pointer transition-colors'
+                                    onClick={() => {
+                                        navigate('/user-appointments')
+                                        setShowDropdown(false)
+                                    }}
+                                >
+                                    My appointments
+                                </p>
+                                <p
+                                    className='py-2 px-3 text-gray-600 hover:bg-gray-100 hover:text-primary rounded cursor-pointer transition-colors'
+                                    onClick={() => {
+                                        setToken(null)
+                                        localStorage.removeItem('token')
+                                        setShowDropdown(false)
+                                    }}
+                                >
+                                    Logout
+                                </p>
+                            </div>
+                        )}
+                    </div>
+                    :
+
                 <NavLink to='/login'>
-                    <button className='px-6 py-2 text-gray-700 hover:text-primary'>Login</button>
+                    <button className='bg-primary text-white px-8 py-3 rounded-full font-light hover:bg-primary/90 transition-all shadow-md hover:shadow-lg'>Create account</button>
                 </NavLink>
-                <button className='px-6 py-2 bg-primary text-white rounded-full hover:bg-primary/90'>Create account</button>
+        }
             </div>
         </div>
     )
