@@ -5,5 +5,3 @@ export const UserAppointments = () => {
     <div>UserAppointments</div>
   )
 }
-
-export default UserAppointments

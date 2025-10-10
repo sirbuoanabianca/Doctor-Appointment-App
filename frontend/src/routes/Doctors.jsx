@@ -5,5 +5,3 @@ export const Doctors = () => {
     <div>Doctors</div>
   )
 }
-
-export default Doctors
