@@ -14,8 +14,9 @@ export const NavBar = () => {
 
     return (
         <div className='flex items-center justify-between py-1 mb-5 border-b border-gray-300'>
-            <NavLink to='/'>
-                <img src={assets.logo} className='w-40 cursor-pointer transition-transform hover:scale-105' alt='logo' />
+            <NavLink to='/' className='flex items-center gap-3'>
+                <img src={assets.logo} className='w-30 cursor-pointer transition-transform hover:scale-105' alt='logo' />
+                <h1 className='text-2xl font-bold text-primary'>NovaCare</h1>
             </NavLink>
             <ul className='hidden md:flex items-center gap-10 font-medium text-gray-600 text-sm'>
                 <NavLink to='/' className={({isActive}) => isActive ? 'text-primary' : ''}>
@@ -47,7 +48,7 @@ export const NavBar = () => {
                             onClick={() => setShowDropdown(!showDropdown)}
                         />
                         {showDropdown && (
-                            <div className='absolute top-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg p-4 min-w-48 z-20'>
+                            <div className='absolute top-12 right-0 bg-white border border-gray-200 rounded-lg shadow-lg p-4 min-w-64 z-20'>
                                 <p
                                     className='py-2 px-3 text-gray-600 hover:bg-gray-100 hover:text-primary rounded cursor-pointer transition-colors'
                                     onClick={() => {

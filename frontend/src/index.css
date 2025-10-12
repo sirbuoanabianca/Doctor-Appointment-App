@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #c61734
+  --color-primary: #c61734;
+  --font-family: 'Montserrat', sans-serif;
+  --font-size-base: 16px;
+  --line-height-base: 1.6;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
 }
 

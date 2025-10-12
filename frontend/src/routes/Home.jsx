@@ -1,7 +1,16 @@
-import React from 'react'
+import { useRef } from 'react'
+import { assets } from '../assets/frontend_assets/assets'
+import { SpecialityMenu } from '../components/SpecialityMenu'
+import { Header } from '../components/Header'
 
 export const Home = () => {
+
+
   return (
-    <div>Home</div>
+      <div>
+        <Header/>
+        <SpecialityMenu/>
+      </div>
+
   )
 }
