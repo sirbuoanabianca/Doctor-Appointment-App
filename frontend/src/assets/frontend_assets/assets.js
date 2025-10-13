@@ -15,6 +15,9 @@ import generalIcon from './icon-physician.png'
 import gynoIcon from './icon-gynecology.png'
 import neuroIcon from './icon-neurologist.png'
 import pedIcon from './icon-pediatrician.png'
+import empathyIcon from './icon-empathy.png'
+import magnifyingIcon from './icon-magnifying-glass.png'
+import solutionIcon from './icon-solutions.png'
 
 
 import doc1 from './doctor1.png'
@@ -45,7 +48,9 @@ export const assets = {
     gynoIcon,
     neuroIcon,
     pedIcon,    
-
+    empathyIcon,
+    magnifyingIcon,
+    solutionIcon,
 }
 
 export const specialityData = [

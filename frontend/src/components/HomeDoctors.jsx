@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { doctorsData } from '../assets/frontend_assets/assets'
+import { assets,doctorsData } from '../assets/frontend_assets/assets'
 
 
 export const HomeDoctors = () => {
@@ -12,6 +12,7 @@ export const HomeDoctors = () => {
 
   return (
     <div className='py-20'>
+
       <h2 className='text-3xl font-bold text-center mb-12'>NovaCare medical team from Cluj-Napoca</h2>
       <h1 className='text-xl text-center mb-12'>Meet our most experienced doctors</h1>
 
@@ -41,7 +42,7 @@ export const HomeDoctors = () => {
         ))}
       </div>
 
-      <div className='flex justify-center mt-10'>
+      <div className='flex justify-center mt-10 mb-20'>
         <Link
           to='/doctors'
           className='bg-primary text-white px-8 py-3 rounded-full font-medium hover:bg-primary/90 transition-all duration-300'
@@ -49,6 +50,37 @@ export const HomeDoctors = () => {
           More doctors
         </Link>
       </div>
+
+
+<h2 className='text-3xl font-bold text-center mt-20 mb-12'>Why choose NovaCare?</h2>
+
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-6 '>
+        <div className='border border-gray-200 rounded-lg p-6 text-center hover:shadow-lg transition-all duration-300'>
+          <div className='flex items-center justify-center gap-3 mb-3'>
+            <h3 className='text-xl font-semibold text-gray-800'>Correct diagnostic</h3>
+            <img src={assets.magnifyingIcon} alt='magnifying glass' className='w-8 h-8' />
+          </div>
+          <p className='text-gray-600'>Correct diagnosis is the foundation of quality medical care. Our team aims to accurately identify conditions, offering personalized treatments to ensure the desired results.</p>
+        </div>
+
+        <div className='border border-gray-200 rounded-lg p-6 text-center hover:shadow-lg transition-all duration-300'>
+          <div className='flex items-center justify-center gap-3 mb-3'>
+            <h3 className='text-xl font-semibold text-gray-800'>Empathy</h3>
+            <img src={assets.empathyIcon} alt='empathy' className='w-8 h-8' />
+          </div>
+          <p className='text-gray-600'>We treat every patient with compassion, understanding, and respect for their individual needs.</p>
+        </div>
+
+        <div className='border border-gray-200 rounded-lg p-6 text-center hover:shadow-lg transition-all duration-300'>
+          <div className='flex items-center justify-center gap-3 mb-3'>
+            <h3 className='text-xl font-semibold text-gray-800'>Personalized solutions</h3>
+            <img src={assets.solutionIcon} alt='solutions' className='w-8 h-8' />
+          </div>
+          <p className='text-gray-600'>Every treatment plan is tailored to your specific health needs and lifestyle preferences.</p>
+        </div>
+      </div>
     </div>
+
+    
   )
 }

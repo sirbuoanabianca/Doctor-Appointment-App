@@ -2,11 +2,11 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { specialityData } from '../assets/frontend_assets/assets'
 
-export const SpecialityMenu = () => {
+export const SpecialityMenu = ({ specialityRef }) => {
   const navigate = useNavigate()
 
   return (
-    <div id="specialityRef" className='py-20'>
+    <div ref={specialityRef} id="specialityRef" className='max-w-7xl mx-auto py-20 px-4 sm:px-8'>
       <h2 className='text-3xl font-bold text-center mb-8'>Our services</h2>
       <div className='flex justify-center items-center gap-20'>
         {specialityData.map((item, index) => (

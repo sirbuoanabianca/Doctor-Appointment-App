@@ -1,12 +1,10 @@
-import React, { useRef } from 'react'
+import React from 'react'
 import { assets } from '../assets/frontend_assets/assets'
 
-export const Header = () => {
-    const specialityRef = useRef(null)
-
+export const Header = ({ specialityRef }) => {
     const handleBookAppointment = () => {
-    specialityRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }
+        specialityRef.current?.scrollIntoView({ behavior: 'smooth' })
+    }
   return (
      <div className='max-w-7xl mx-auto px-4 flex items-center gap-8 bg-primary rounded-lg'>
     

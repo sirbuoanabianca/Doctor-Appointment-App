@@ -5,12 +5,12 @@ import { Header } from '../components/Header'
 import { HomeDoctors } from '../components/HomeDoctors'
 
 export const Home = () => {
-
+  const specialityRef = useRef(null)
 
   return (
       <div className='max-w-7xl mx-auto px-4 sm:px-8'>
-        <Header/>
-        <SpecialityMenu/>
+        <Header specialityRef={specialityRef} />
+        <SpecialityMenu specialityRef={specialityRef} />
         <HomeDoctors/>
       </div>
 

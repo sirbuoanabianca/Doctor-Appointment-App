@@ -9,6 +9,7 @@ import { UserProfile } from './routes/UserProfile'
 import { UserAppointments } from './routes/UserAppointments'
 import { Appointment } from './routes/Appointment'
 import { NavBar } from './components/NavBar'
+import { Footer } from './components/Footer'
 
 export const App = () => {
   return (
@@ -25,6 +26,7 @@ export const App = () => {
         <Route path='/user-appointments' element={<UserAppointments />} />
         <Route path='/appointment/:docId' element={<Appointment />} />
       </Routes>
+      <Footer />
     </div>
   )
 }
