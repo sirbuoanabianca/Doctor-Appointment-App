@@ -12,7 +12,7 @@ import { NavBar } from './components/NavBar'
 
 export const App = () => {
   return (
-    <div className='mx-4 sm:mx-[10%]'>
+    <div>
       <NavBar />
       <Routes>
         <Route path='/' element={<Home />} />
