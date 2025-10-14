@@ -24,7 +24,7 @@ export const HomeDoctors = () => {
             onClick={() => navigate(`/appointment/${doctor._id}`)}
             className='border-2 border-primary rounded-lg overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'
           >
-            <div className='h-72 w-full bg-blue-50 overflow-hidden'>
+            <div className='h-72 w-full bg-gray-50 overflow-hidden'>
               <img
                 src={doctor.image}
                 alt={doctor.name}

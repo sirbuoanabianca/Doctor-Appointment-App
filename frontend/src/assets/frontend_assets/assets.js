@@ -153,7 +153,7 @@ export const doctorsData = [
     },
     {
         _id: 'doc8',
-        name: 'Dr. Ioana Munteanu',
+        name: 'Dr. Ioan Munteanu',
         image: doc8,
         speciality: 'Gynecologist',
         degree: 'MBBS',
@@ -163,7 +163,7 @@ export const doctorsData = [
     },
     {
         _id: 'doc9',
-        name: 'Dr. Raluca Diaconu',
+        name: 'Dr. David Diaconu',
         image: doc9,
         speciality: 'Dermatologist',
         degree: 'MBBS',
@@ -203,7 +203,7 @@ export const doctorsData = [
     },
     {
         _id: 'doc13',
-        name: 'Dr. Laura Marinescu',
+        name: 'Dr. Eduard Marinescu',
         image: doc13,
         speciality: 'General physician',
         degree: 'MBBS',
