@@ -89,7 +89,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '4 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 250
+        fees: 250,
+        slots_booked: []
     },
     {
         _id: 'doc2',
@@ -99,7 +100,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '3 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 300
+        fees: 300,
+        slots_booked: []
     },
     {
         _id: 'doc3',
@@ -109,7 +111,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '1 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 150
+        fees: 150,
+        slots_booked: []
     },
     {
         _id: 'doc4',
@@ -119,7 +122,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '2 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 200
+        fees: 200,
+        slots_booked: []
     },
     {
         _id: 'doc5',
@@ -129,7 +133,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '4 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 250
+        fees: 250,
+        slots_booked: []
     },
     {
         _id: 'doc6',
@@ -139,7 +144,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '5 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 250
+        fees: 250,
+        slots_booked: []
     },
     {
         _id: 'doc7',
@@ -149,7 +155,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '6 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 250
+        fees: 250,
+        slots_booked: []
     },
     {
         _id: 'doc8',
@@ -159,7 +166,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '3 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 300
+        fees: 300,
+        slots_booked: []
     },
     {
         _id: 'doc9',
@@ -169,7 +177,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '1 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 150
+        fees: 150,
+        slots_booked: []
     },
     {
         _id: 'doc10',
@@ -179,7 +188,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '2 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 200
+        fees: 200,
+        slots_booked: []
     },
     {
         _id: 'doc11',
@@ -189,7 +199,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '4 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 250
+        fees: 250,
+        slots_booked: []
     },
     {
         _id: 'doc12',
@@ -199,7 +210,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '4 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 250
+        fees: 250,
+        slots_booked: []
     },
     {
         _id: 'doc13',
@@ -209,7 +221,8 @@ export const doctorsData = [
         degree: 'MBBS',
         experience: '4 Years',
         about: 'Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies. Dr. Davis has a strong commitment to delivering comprehensive medical care, focusing on preventive medicine, early diagnosis, and effective treatment strategies.',
-        fees: 250
+        fees: 250,
+        slots_booked: []
     },
 
 ]

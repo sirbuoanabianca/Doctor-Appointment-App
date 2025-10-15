@@ -1,14 +1,16 @@
-import React from 'react'
+import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { assets,doctorsData } from '../assets/frontend_assets/assets'
+import { assets } from '../assets/frontend_assets/assets'
+import { AppContext } from '../context/AppContext'
 
 
 export const HomeDoctors = () => {
-  const topDoctors = [...doctorsData]
+  const { doctors } = useContext(AppContext);
+  const topDoctors = [...doctors]
     .sort((a, b) => parseInt(b.experience) - parseInt(a.experience))
     .slice(0, 6);
 
-    const navigate = useNavigate()
+  const navigate = useNavigate()
 
   return (
     <div className='py-20'>
