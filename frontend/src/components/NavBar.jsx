@@ -1,16 +1,14 @@
 import { assets } from '../assets/frontend_assets/assets'
-import { NavLink, useNavigate } from 'react-router-dom'
-import React, { useState, useEffect } from 'react'
+import { NavLink, useNavigate, useLocation } from 'react-router-dom'
+import React, { useState, useContext } from 'react'
+import { AppContext } from '../context/AppContext'
 
 export const NavBar = () => {
 
     const [showDropdown, setShowDropdown] = useState(false)
-    const [token, setToken] = useState(localStorage.getItem('token') || null)
+    const { token, logout } = useContext(AppContext)
     const navigate = useNavigate()
-
-    useEffect(() => {
-        setToken('kjdskdsj')  // Test token
-    }, [])
+    const location = useLocation()  
 
     return (
         <div className='max-w-7xl mx-auto px-4 sm:px-8 flex items-center justify-between py-1 mb-5 border-b border-gray-300'>
@@ -70,9 +68,9 @@ export const NavBar = () => {
                                     <p
                                         className='py-2 px-3 text-gray-600 hover:bg-gray-100 hover:text-primary rounded cursor-pointer transition-colors'
                                         onClick={() => {
-                                            setToken(null)
-                                            localStorage.removeItem('token')
+                                            logout() 
                                             setShowDropdown(false)
+                                            navigate('/login')
                                         }}
                                     >
                                         Logout
@@ -82,9 +80,15 @@ export const NavBar = () => {
                         </div>
                         :
 
-                        <NavLink to='/login'>
-                            <button className='bg-primary text-white px-8 py-3 rounded-full font-light hover:bg-primary/90 transition-all shadow-md hover:shadow-lg'>Create account</button>
-                        </NavLink>
+                        location.pathname === '/create-account' ? (
+                            <NavLink to='/login'>
+                                <button className='bg-primary text-white px-8 py-3 rounded-full font-light hover:bg-primary/90 transition-all shadow-md hover:shadow-lg'>Login</button>
+                            </NavLink>
+                        ) : (
+                            <NavLink to='/create-account'>
+                                <button className='bg-primary text-white px-8 py-3 rounded-full font-light hover:bg-primary/90 transition-all shadow-md hover:shadow-lg'>Create account</button>
+                            </NavLink>
+                        )
                 }
             </div>
         </div>

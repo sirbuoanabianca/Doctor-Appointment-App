@@ -3,6 +3,7 @@ import { Route, Routes } from 'react-router-dom'
 import { Home } from './routes/Home'
 import { Doctors } from './routes/Doctors'
 import { Login } from './routes/Login'
+import { CreateAccount } from './routes/CreateAccount'
 import { About } from './routes/About'
 import { Contact } from './routes/Contact'
 import { UserProfile } from './routes/UserProfile'
@@ -22,6 +23,7 @@ export const App = () => {
           <Route path='/doctors' element={<Doctors />} />
           <Route path='/doctors/:speciality' element={<Doctors />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/create-account' element={<CreateAccount />} />
           <Route path='/about' element={<About />} />
           <Route path='/contact' element={<Contact />} />
           <Route path='/user-profile' element={<UserProfile />} />

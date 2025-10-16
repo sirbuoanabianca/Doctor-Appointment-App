@@ -5,6 +5,7 @@ export const AppContext = createContext();
 
 export const AppContextProvider = ({ children }) => {
   const [doctors, setDoctors] = useState(doctorsData);
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
 
   const bookAppointment = (docId, slotDate, slotTime) => {
     setDoctors(prevDoctors => {
@@ -20,9 +21,23 @@ export const AppContextProvider = ({ children }) => {
     });
   };
 
+  const login = (authToken) => {
+    setToken(authToken);
+    localStorage.setItem('token', authToken);
+  };
+
+  const logout = () => {
+    setToken(null);
+    localStorage.removeItem('token');
+  };
+
   const value = {
     doctors,
-    bookAppointment
+    bookAppointment,
+    token,
+    setToken,
+    login,
+    logout
   };
 
   return (

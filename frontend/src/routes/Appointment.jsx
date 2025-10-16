@@ -207,7 +207,7 @@ export const Appointment = () => {
 
       {/* Related doctors  */}
       <h2 className="text-2xl font-semibold text-gray-900 text-center mt-30 mb-12">Related doctors</h2>
-      <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+      <div className='grid grid-cols-1 md:grid-cols-3 gap-6 m-20'>
           {filteredDocs.map((doctor) => (
             <div
               key={doctor._id}
