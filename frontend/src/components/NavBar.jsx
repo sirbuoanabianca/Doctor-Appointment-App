@@ -7,6 +7,7 @@ export const NavBar = () => {
 
     const [showDropdown, setShowDropdown] = useState(false)
     const { token, logout } = useContext(AppContext)
+    const { user } = useContext(AppContext)
     const navigate = useNavigate()
     const location = useLocation()  
 
@@ -39,6 +40,7 @@ export const NavBar = () => {
                                 className='w-10 rounded-full cursor-pointer border-1 border-primary'
                                 alt='user profile'
                             />
+                            <p className='text-gray-600'>{user?.name}</p>
                             <img
                                 src={assets.dropdownIcon}
                                 className='w-2.5 cursor-pointer'

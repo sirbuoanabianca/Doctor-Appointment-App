@@ -1,4 +1,4 @@
-import React, { useState, useContext }  from 'react'
+import React, { useState, useContext } from 'react'
 import { AuthCard } from '../components/AuthCard'
 import { AppContext } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
@@ -16,10 +16,13 @@ export const Login = () => {
 
   const handleLogin = async (e) => {
     //TODO: call backend API
-    // On success, store token in context and localStorage -call login from context
+    // On success, store token in context and localStorage and userdata -call login from context
     // Redirect to home page
 
     // On failure, show error message -setInvalidCredential(true), setErrorMessage('Invalid email or password');
+    //if response.data.success -> call login(response.data.token, response.data.user);
+    login('tempToken', { email, password });
+    navigate('/');
   }
 
   return (
