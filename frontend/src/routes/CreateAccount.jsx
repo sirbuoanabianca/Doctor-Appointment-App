@@ -9,29 +9,30 @@ export const CreateAccount = () => {
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
-    const validEmail = new RegExp(
-        '^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
-    );
-    const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$');
-    let errors = [];
+    const [errorMessage, setErrorMessage] = useState([]);
     const [invalidCredential, setInvalidCredential] = useState(false);
     const { login } = useContext(AppContext);
     const navigate = useNavigate();
 
+    const validEmail = new RegExp(
+        '^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$'
+    );
+    const validPassword = new RegExp('^(?=.*?[A-Za-z])(?=.*?[0-9]).{6,}$');
+
     const validate = () => {
+        const errors = [];
+
+        if (!name.trim()) {
+            errors.push("- Name is required");
+        }
         if (!validEmail.test(email)) {
-            errors.push("Invalid email format");
+            errors.push("- Invalid email format");
         }
         if (!validPassword.test(password)) {
-            errors.push("Invalid password format: minimum 6 characters, at least 1 letter and 1 number");
+            errors.push("- Invalid password format: minimum 6 characters, at least 1 letter and 1 number");
         }
 
-        if (errors.length > 0) {
-            setErrorMessage(errors);
-            setInvalidCredential(true);
-            return;
-        }
+        return errors;
     };
 
     const handleCreateAccount = (e) => {
@@ -39,14 +40,21 @@ export const CreateAccount = () => {
         console.log('Email:', email);
         console.log('Password:', password);
 
-        validate()
-        if(!invalidCredential){
-            login('tempToken');
-                navigate('/'); 
+        const errors = validate();
+
+        if (errors.length > 0) {
+            setErrorMessage(errors);
+            setInvalidCredential(true);
+            return; 
         }
 
+        setErrorMessage([]);
+        setInvalidCredential(false);
+
+        login('tempToken', { name, email });
+        navigate('/');
+
         //TODO:
-        // - Validate inputs
         // - Call API to create account
         // - Handle success/error
     }
