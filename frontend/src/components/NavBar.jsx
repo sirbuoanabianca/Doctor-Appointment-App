@@ -3,6 +3,7 @@ import { NavLink, useNavigate, useLocation } from 'react-router-dom'
 import React, { useState, useContext } from 'react'
 import { AppContext } from '../context/AppContext'
 
+
 export const NavBar = () => {
 
     const [showDropdown, setShowDropdown] = useState(false)

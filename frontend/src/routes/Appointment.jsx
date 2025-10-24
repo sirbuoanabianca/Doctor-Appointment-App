@@ -195,6 +195,18 @@ export const Appointment = () => {
           )}
         </div>
 
+        <div className="mb-6">
+          <label htmlFor="notes" className="block text-sm font-semibold text-gray-700 mb-2">
+            Notes 
+          </label>
+          <textarea
+            id="notes"
+            rows="4"
+            className="w-full border-2 border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+            placeholder="Add any notes or special requests for your appointment..."
+          ></textarea>
+        </div>
+
         <button
           onClick={handleBookAppointment}
           className="w-full md:w-auto bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
