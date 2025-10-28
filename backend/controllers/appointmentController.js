@@ -21,8 +21,8 @@ export const getUserAppointments = async (req, res, next) => {
 export const getAvailableSlots = async (req, res, next) => {
   try {
     const { doctorId } = req.params;
-    const { date } = req.query;
-    const result = await appointmentService.getAvailableSlots(doctorId, date);
+    const { date, days } = req.query;
+    const result = await appointmentService.getAvailableSlots(doctorId, date, days);
     res.status(200).json(result);
   } catch (error) {
     next(error);

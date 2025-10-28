@@ -24,7 +24,6 @@ export const bookAppointment = async (userId, appointmentData) => {
     doctorId,
     date: new Date(date),
     time,
-    status: { $ne: 'cancelled' },
   });
 
   if (existingAppointment) {
@@ -63,9 +62,9 @@ export const getUserAppointments = async (userId) => {
   };
 };
 
-export const getAvailableSlots = async (doctorId, date) => {
-  if (!doctorId || !date) {
-    throw new AppError('Doctor ID and date are required', 400);
+export const getAvailableSlots = async (doctorId, startDate, days = 30) => {
+  if (!doctorId || !startDate) {
+    throw new AppError('Doctor ID and start date are required', 400);
   }
 
   const doctor = await doctorModel.findById(doctorId);
@@ -79,22 +78,46 @@ export const getAvailableSlots = async (doctorId, date) => {
     '16:00', '16:30', '17:00', '17:30',
   ];
 
+  const start = new Date(startDate);
+  const end = new Date(start);
+  end.setDate(end.getDate() + days);
+
   const bookedAppointments = await appointmentModel.find({
     doctorId,
-    date: new Date(date),
-    status: { $ne: 'cancelled' },
-  }).select('time');
+    date: { $gte: start, $lt: end },
+  }).select('date time');
 
-  const bookedSlots = bookedAppointments.map(app => app.time);
+  const slotsByDate = {};
 
-  const availableSlots = allSlots.filter(slot => !bookedSlots.includes(slot));
+  for (let i = 0; i < days; i++) {
+    const currentDate = new Date(start);
+    currentDate.setDate(currentDate.getDate() + i);
+    const dateString = currentDate.toISOString().split('T')[0];
+
+    const bookedSlotsForDate = bookedAppointments
+      .filter(app => {
+        const appDate = new Date(app.date).toISOString().split('T')[0];
+        return appDate === dateString;
+      })
+      .map(app => app.time);
+
+    const availableSlots = allSlots.filter(slot => !bookedSlotsForDate.includes(slot));
+
+    slotsByDate[dateString] = {
+      date: dateString,
+      availableSlots,
+      bookedSlots: bookedSlotsForDate,
+    };
+  }
 
   return {
     success: true,
-    availableSlots,
-    bookedSlots,
+    days,
+    slots: slotsByDate,
   };
 };
+
+
 
 export const cancelAppointment = async (userId, appointmentId) => {
   const appointment = await appointmentModel.findById(appointmentId);
@@ -107,12 +130,7 @@ export const cancelAppointment = async (userId, appointmentId) => {
     throw new AppError('Not authorized to cancel this appointment', 403);
   }
 
-  if (appointment.status === 'cancelled') {
-    throw new AppError('Appointment is already cancelled', 400);
-  }
-
-  appointment.status = 'cancelled';
-  await appointment.save();
+  await appointmentModel.findByIdAndDelete(appointmentId);
 
   return {
     success: true,

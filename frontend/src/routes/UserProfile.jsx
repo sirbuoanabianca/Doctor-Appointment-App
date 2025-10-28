@@ -3,10 +3,13 @@ import { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
 import { assets } from '../assets/frontend_assets/assets'
 import { useState } from 'react'
+import axios from 'axios'
+
+const API_URL = import.meta.env.VITE_SERVER_API_URL || 'http://localhost:5000';
 
 export const UserProfile = () => {
 
-  const { user, setUser } = useContext(AppContext);
+  const { user, setUser, token, fetchUserProfile } = useContext(AppContext);
   const [isEditing, setIsEditing] = useState(false);
 
   const [editedEmail, setEditedEmail] = useState(user?.email || '');
@@ -22,38 +25,51 @@ export const UserProfile = () => {
   const [editedName, setEditedName] = useState(user?.name || '');
 
 
-  const handleSave = () => {
-    setUser({
-      ...user,
-      name: editedName,
-      email: editedEmail,
-      phone: editedPhone,
-      birthDate: editedBirthDate,
-      cnp: editedCNP,
-      gender: editedGender,
-      address: {
-        street: editedStreet,
-        city: editedCity,
-        postalCode: editedPostalCode,
-        country: editedCountry,
-        county: editedCounty,
-      },
-    });
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const updatedData = {
+        name: editedName,
+        phone: editedPhone,
+        DateOfBirth: editedBirthDate,
+        CNP: editedCNP,
+        gender: editedGender,
+        StreetAddress: editedStreet,
+        City: editedCity,
+        PostalCode: editedPostalCode,
+        Country: editedCountry,
+        County: editedCounty,
+      };
+
+      const response = await axios.put(
+        `${API_URL}/api/user/profile`,
+        updatedData,
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+
+      if (response.data.success) {
+        await fetchUserProfile();
+        setIsEditing(false);
+      }
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert(error.response?.data?.message || 'Failed to update profile');
+    }
   };
 
   const handleCancel = () => {
     setEditedEmail(user?.email || '');
     setEditedPhone(user?.phone || '');
-    setEditedBirthDate(user?.birthDate || '');
-    setEditedCNP(user?.cnp || '');
+    setEditedBirthDate(user?.DateOfBirth || '');
+    setEditedCNP(user?.CNP || '');
     setEditedGender(user?.gender || '');
     setEditedName(user?.name || '');
-    setEditedStreet(user?.address?.street || '');
-    setEditedCity(user?.address?.city || '');
-    setEditedCounty(user?.address?.county || '');
-    setEditedPostalCode(user?.address?.postalCode || '');
-    setEditedCountry(user?.address?.country || '');
+    setEditedStreet(user?.StreetAddress || '');
+    setEditedCity(user?.City || '');
+    setEditedCounty(user?.County || '');
+    setEditedPostalCode(user?.PostalCode || '');
+    setEditedCountry(user?.Country || '');
     setIsEditing(false);
   };
 
@@ -68,7 +84,7 @@ export const UserProfile = () => {
             </div>
             <div>
               <h1 className="text-3xl font-bold">{user?.name}</h1>
-              <p className="text-gray-500">{user?.address?.city}, {user?.address?.country}</p>
+              <p className="text-gray-500">{user?.City}, {user?.Country}</p>
 
             </div>
           </div>
@@ -154,7 +170,7 @@ export const UserProfile = () => {
                 <label className="text-gray-500 block mb-1">CNP</label>
                 <input
                   type="text"
-                  value={isEditing ? editedCNP : user?.cnp || ''}
+                  value={isEditing ? editedCNP : user?.CNP || ''}
                   disabled={!isEditing}
                   onChange={(e) => setEditedCNP(e.target.value)}
                   className={`w-full rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${isEditing ? 'border border-gray-300' : 'border-none bg-transparent p-0'
@@ -210,7 +226,7 @@ export const UserProfile = () => {
                 <label className="text-gray-500 block mb-1">Street</label>
                 <input
                   type="text"
-                  value={isEditing ? editedStreet : user?.address?.street || ''}
+                  value={isEditing ? editedStreet : user?.StreetAddress || ''}
                   disabled={!isEditing}
                   onChange={(e) => setEditedStreet(e.target.value)}
                   className={`w-full rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${isEditing ? 'border border-gray-300' : 'border-none bg-transparent p-0'
@@ -221,7 +237,7 @@ export const UserProfile = () => {
                 <label className="text-gray-500 block mb-1">City</label>
                 <input
                   type="text"
-                  value={isEditing ? editedCity : user?.address?.city || ''}
+                  value={isEditing ? editedCity : user?.City || ''}
                   disabled={!isEditing}
                   onChange={(e) => setEditedCity(e.target.value)}
                   className={`w-full rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${isEditing ? 'border border-gray-300' : 'border-none bg-transparent p-0'
@@ -232,7 +248,7 @@ export const UserProfile = () => {
                 <label className="text-gray-500 block mb-1">County</label>
                 <input
                   type="text"
-                  value={isEditing ? editedCounty : user?.address?.county || ''}
+                  value={isEditing ? editedCounty : user?.County || ''}
                   disabled={!isEditing}
                   onChange={(e) => setEditedCounty(e.target.value)}
                   className={`w-full rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${isEditing ? 'border border-gray-300' : 'border-none bg-transparent p-0'
@@ -243,7 +259,7 @@ export const UserProfile = () => {
                 <label className="text-gray-500 block mb-1">Postal code</label>
                 <input
                   type="text"
-                  value={isEditing ? editedPostalCode : user?.address?.postalCode || ''}
+                  value={isEditing ? editedPostalCode : user?.PostalCode || ''}
                   disabled={!isEditing}
                   onChange={(e) => setEditedPostalCode(e.target.value)}
                   className={`w-full rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${isEditing ? 'border border-gray-300' : 'border-none bg-transparent p-0'
@@ -254,7 +270,7 @@ export const UserProfile = () => {
                 <label className="text-gray-500 block mb-1">Country</label>
                 <input
                   type="text"
-                  value={isEditing ? editedCountry : user?.address?.country || ''}
+                  value={isEditing ? editedCountry : user?.Country || ''}
                   disabled={!isEditing}
                   onChange={(e) => setEditedCountry(e.target.value)}
                   className={`w-full rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary ${isEditing ? 'border border-gray-300' : 'border-none bg-transparent p-0'

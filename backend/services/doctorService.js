@@ -5,11 +5,11 @@ import { validateEmail, validatePassword } from '../utils/validators.js';
 import fs from 'fs';
 import path from 'path';
 
-export const getAllDoctors = async (specialty) => {
+export const getAllDoctors = async (specialization) => {
   let query = {};
 
-  if (specialty) {
-    query.specialization = specialty;
+  if (specialization) {
+    query.specialization = specialization;
   }
 
   const doctors = await doctorModel.find(query).select('-password');
@@ -33,12 +33,12 @@ export const getDoctorById = async (doctorId) => {
   };
 };
 
-export const getAllSpecialties = async () => {
-  const specialties = await doctorModel.distinct('specialization');
+export const getAllSpecializations = async () => {
+  const specializations = await doctorModel.distinct('specialization');
 
   return {
     success: true,
-    specialties,
+    specializations,
   };
 };
 

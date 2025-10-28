@@ -3,7 +3,8 @@ import { AuthCard } from '../components/AuthCard'
 import { useNavigate } from 'react-router-dom'
 import { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
-
+import axios from 'axios'
+const API_URL = import.meta.env.SERVER_API_URL || 'http://localhost:5000';
 
 export const CreateAccount = () => {
     const [name, setName] = useState('');
@@ -11,7 +12,7 @@ export const CreateAccount = () => {
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState([]);
     const [invalidCredential, setInvalidCredential] = useState(false);
-    const { login } = useContext(AppContext);
+    const { register } = useContext(AppContext);
     const navigate = useNavigate();
 
     const validEmail = new RegExp(
@@ -35,7 +36,8 @@ export const CreateAccount = () => {
         return errors;
     };
 
-    const handleCreateAccount = (e) => {
+    const handleCreateAccount = async (e) => {
+        e.preventDefault();
         console.log('Name:', name);
         console.log('Email:', email);
         console.log('Password:', password);
@@ -48,15 +50,29 @@ export const CreateAccount = () => {
             return; 
         }
 
+
+ try {
+      const response = await axios.post(`${API_URL}/api/user/register`, {name, email, password });
+      if (response.data.success) {
+        register(response.data.token, response.data.user);
         setErrorMessage([]);
         setInvalidCredential(false);
-
-        login('tempToken', { name, email });
         navigate('/');
+      } else {
+        setInvalidCredential(true);
+        setErrorMessage([response.data.message || 'Invalid name, email or password']);
+      }
+    }
+      catch (error) {   
+        console.error('Create account error:', error);
+        setInvalidCredential(true);
+        if (error.response) {
+          setErrorMessage([error.response.data.message || 'Account creation failed. Please try again.']);
+        } else {
+          setErrorMessage(['Cannot connect to server. Please check if the backend is running.']);
+        }
+      }
 
-        //TODO:
-        // - Call API to create account
-        // - Handle success/error
     }
 
 

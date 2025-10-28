@@ -7,6 +7,7 @@ export const Doctors = () => {
   const { speciality } = useParams();
   const { doctors } = useContext(AppContext);
   const [filteredDocs, setFilteredDocs] = useState([]);
+  const { specializations } = useContext(AppContext);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,7 +17,7 @@ export const Doctors = () => {
 
   useEffect(() => {
     if (speciality) {
-      setFilteredDocs(doctors.filter(doc => doc.speciality === speciality));
+      setFilteredDocs(doctors.filter(doc => doc.specialization === speciality));
     } else {
       setFilteredDocs(doctors);
     }
@@ -40,17 +41,16 @@ export const Doctors = () => {
         <div className="w-full md:w-1/4">
           <div className="space-y-2">
 
-            {specialityData.map((item, index) => (
+            {specializations.map((spec, index) => (
               <div
                 key={index}
-                onClick={() => handleSpecialityClick(item.speciality)}
-                className={`p-4 border rounded-lg cursor-pointer transition-all duration-500 hover:shadow-md ${speciality === item.speciality
+                onClick={() => handleSpecialityClick(spec)}
+                className={`p-4 border rounded-lg cursor-pointer transition-all duration-500 hover:shadow-md ${speciality === spec
                     ? 'bg-primary text-white border-primary shadow-md'
                     : 'bg-white border-gray-300 hover:border-primary'
                   }`}
               >
-                <p className="text-sm font-semibold">{item.speciality}</p>
-                {speciality === item.speciality}
+                <p className="text-sm font-semibold">{spec}</p>
               </div>
             ))}
           </div>
@@ -66,10 +66,13 @@ export const Doctors = () => {
             >
               <div className='h-72 w-full bg-gray-50 overflow-hidden relative'>
                 <img
-                  src={doctor.image}
+                  src={doctor.profileImage}
                   alt={doctor.name}
                   className='w-full h-full object-cover object-top'
                 />
+                <div className='absolute top-4 right-4 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full group-hover:bg-white group-hover:text-primary transition-colors duration-300'>
+                  {doctor.experience} years experience
+                </div>
 
                 <div className='absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40'>
                   <Link
@@ -82,19 +85,13 @@ export const Doctors = () => {
               </div>
 
               <div className='p-4 relative group-hover:bg-primary transition-colors duration-300'>
-                <div className='absolute top-4 right-4 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full group-hover:bg-white group-hover:text-primary transition-colors duration-300'>
-                  {doctor.experience}
-                </div>
+                
                 <h3 className='text-lg font-semibold text-gray-800 group-hover:text-white transition-colors duration-300'>{doctor.name}</h3>
-                <p className='text-sm text-gray-600 group-hover:text-white/90 transition-colors duration-300'>{doctor.speciality}</p>
+                <p className='text-sm text-gray-600 group-hover:text-white/90 transition-colors duration-300'>{doctor.specialization}</p>
               </div>
             </div>
           ))}
         </div>
-
-
-
-
 
       </div>
     </div>

@@ -86,11 +86,8 @@ export const getUserProfile = async (userId) => {
   };
 };
 
-// Update user profile
 export const updateUserProfile = async (userId, updateData) => {
-  // Don't allow password update through this method
   delete updateData.password;
-  delete updateData.email; // Email shouldn't be changed
 
   const updatedUser = await userModel.findByIdAndUpdate(
     userId,

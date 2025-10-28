@@ -26,19 +26,19 @@ export const HomeDoctors = () => {
             onClick={() => navigate(`/appointment/${doctor._id}`)}
             className='border-2 border-primary rounded-lg overflow-hidden cursor-pointer hover:translate-y-[-10px] transition-all duration-500'
           >
-            <div className='h-72 w-full bg-gray-50 overflow-hidden'>
+            <div className='h-72 w-full bg-gray-50 overflow-hidden relative'>
               <img
-                src={doctor.image}
+                src={doctor.profileImage}
                 alt={doctor.name}
                 className='w-full h-full object-cover object-top'
               />
-            </div>
-            <div className='p-4 relative'>
-              <div className='absolute top-4 right-4 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full'>
-                {doctor.experience}
+              <div className='absolute top-4 right-4 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full shadow-lg'>
+                {doctor.experience} years experience
               </div>
+            </div>
+            <div className='p-4'>
               <h3 className='text-lg font-semibold text-gray-800'>{doctor.name}</h3>
-              <p className='text-sm text-gray-600'>{doctor.speciality}</p>
+              <p className='text-sm text-gray-600'>{doctor.specialization}</p>
             </div>
           </div>
         ))}

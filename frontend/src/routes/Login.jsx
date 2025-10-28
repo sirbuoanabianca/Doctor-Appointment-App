@@ -4,25 +4,41 @@ import { AppContext } from '../context/AppContext'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
+const API_URL = import.meta.env.VITE_SERVER_API_URL || 'http://localhost:5000';
 
 export const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [invalidCredential, setInvalidCredential] = useState(false);
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState([]);
 
   const { login } = useContext(AppContext);
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
-    //TODO: call backend API
-    // On success, store token in context and localStorage and userdata -call login from context
-    // Redirect to home page
+    e.preventDefault();
+    setInvalidCredential(false);
+    setErrorMessage([]);
 
-    // On failure, show error message -setInvalidCredential(true), setErrorMessage('Invalid email or password');
-    //if response.data.success -> call login(response.data.token, response.data.user);
-    login('tempToken', { email, password });
-    navigate('/');
+    try {
+      const response = await axios.post(`${API_URL}/api/user/login`, { email, password });
+      if (response.data.success) {
+        login(response.data.token, response.data.user);
+        navigate('/');
+      } else {
+        setInvalidCredential(true);
+        setErrorMessage([response.data.message || 'Invalid email or password']);
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      setInvalidCredential(true);
+      if (error.response) {
+        setErrorMessage([error.response.data.message || 'Login failed. Please try again.']);
+      } else {
+        setErrorMessage(['Cannot connect to server. Please check if the backend is running.']);
+      }
+
+    }
   }
 
   return (

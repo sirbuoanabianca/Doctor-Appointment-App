@@ -2,16 +2,22 @@ import { useParams } from 'react-router-dom'
 import { useContext, useState, useEffect } from 'react'
 import { AppContext } from '../context/AppContext'
 import { Link } from 'react-router-dom'
+import axios from 'axios'
+
+const API_URL = import.meta.env.SERVER_API_URL || 'http://localhost:5000';
 
 export const Appointment = () => {
   const { docId } = useParams();
-  const { doctors, bookAppointment } = useContext(AppContext);
+  const { doctors, token } = useContext(AppContext);
   const [doctorDetails, setDoctorDetails] = useState(null);
   const [docSlots, setDocSlots] = useState([]);
   const [slotIndex, setSlotIndex] = useState(0);
   const [slotTime, setSlotTime] = useState('');
   const [filteredDocs, setFilteredDocs] = useState([]);
-
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [notes, setNotes] = useState('');
+  const [bookingLoading, setBookingLoading] = useState(false);
 
   const daysOfWeek = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
   const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -22,55 +28,105 @@ export const Appointment = () => {
     setDoctorDetails(doctor);
   };
 
-  const getAvailableSlots = () => {
-    const slots = [];
-    const today = new Date();
+  const getAvailableSlots = async () => {
+    if (!docId) return;
 
-    for (let i = 0; i < 7; i++) {
-      const currentDate = new Date(today);
-      //we display slots starting from tomorrow
-      currentDate.setDate(today.getDate() + i + 1);
+    try {
+      setLoading(true);
+      setError(null);
 
-      const timeSlots = [];
-      for (let hour = 9; hour <= 17; hour++) {
-        const hourTime = `${hour.toString().padStart(2, '0')}:00`;
-        const dateString = currentDate.toISOString().split('T')[0];
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const startDate = tomorrow.toISOString().split('T')[0];
 
-        const isBooked = doctorDetails?.slots_booked?.some(
-          slot => slot.date === dateString && slot.time === hourTime
-        );
-
-        if (!isBooked) {
-          timeSlots.push({
-            datetime: new Date(currentDate.setHours(hour, 0, 0, 0)),
-            time: hourTime
-          });
+      const response = await axios.get(
+        `${API_URL}/api/appointment/slots/${docId}`,
+        {
+          params: {
+            date: startDate,
+            days: 30
+          }
         }
+      );
+
+      if (response.data.success) {
+        const slots = [];
+        const slotsData = response.data.slots;
+
+        Object.keys(slotsData).forEach((dateString) => {
+          const slotData = slotsData[dateString];
+          const date = new Date(dateString);
+
+          const timeSlots = slotData.availableSlots.map(time => ({
+            datetime: new Date(`${dateString}T${time}`),
+            time: time
+          }));
+
+          slots.push({
+            date: date,
+            timeSlots: timeSlots
+          });
+        });
+
+        setDocSlots(slots);
       }
-
-      slots.push({
-        date: new Date(today.getTime() + (i + 1) * 24 * 60 * 60 * 1000),
-        timeSlots: timeSlots
-      });
+    } catch (err) {
+      console.error('Error fetching available slots:', err);
+      setError('Failed to load available slots. Please try again.');
+    } finally {
+      setLoading(false);
     }
-
-    setDocSlots(slots);
   };
 
-  const handleBookAppointment = () => {
+  const handleBookAppointment = async () => {
     if (!slotTime) {
       alert('Please select a time slot');
       return;
     }
 
-    const selectedDate = docSlots[slotIndex].date;
-    const dateString = selectedDate.toISOString().split('T')[0];
+    if (!token) {
+      alert('Please login to book an appointment');
+      return;
+    }
 
-    bookAppointment(docId, dateString, slotTime);
-    alert('Appointment booked successfully!');
+    try {
+      setBookingLoading(true);
+      setError(null);
 
-    getAvailableSlots();
-    setSlotTime('');
+      const selectedDate = docSlots[slotIndex].date;
+      const dateString = selectedDate.toISOString().split('T')[0];
+
+      const response = await axios.post(
+        `${API_URL}/api/appointment/bookAppointment`,
+        {
+          doctorId: docId,
+          date: dateString,
+          time: slotTime,
+          notes: notes
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data.success) {
+        alert(response.data.message || 'Appointment booked successfully!');
+
+        await getAvailableSlots();
+
+        setSlotTime('');
+        setNotes('');
+      }
+    } catch (err) {
+      console.error('Error booking appointment:', err);
+      const errorMessage = err.response?.data?.message || 'Failed to book appointment. Please try again.';
+      alert(errorMessage);
+      setError(errorMessage);
+    } finally {
+      setBookingLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -78,10 +134,10 @@ export const Appointment = () => {
   }, [doctors, docId]);
 
   useEffect(() => {
-    if (doctorDetails) {
+    if (docId) {
       getAvailableSlots();
     }
-  }, [doctorDetails]);
+  }, [docId]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -103,7 +159,7 @@ export const Appointment = () => {
         <div className="md:flex">
           <div className="md:w-64 h-64 md:h-auto flex-shrink-0">
             <img
-              src={doctorDetails.image}
+              src={doctorDetails.profileImage}
               alt={doctorDetails.name}
               className="w-full h-full object-cover object-top"
             />
@@ -112,13 +168,13 @@ export const Appointment = () => {
             <div className="flex items-start justify-between mb-4">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900 mb-1">{doctorDetails.name}</h1>
-                <p className="text-gray-600">{doctorDetails.speciality}</p>
+                <p className="text-gray-600">{doctorDetails.specialization}</p>
                 <p className="text-sm text-gray-500 mt-1">
                   {doctorDetails.degree}
                 </p>
               </div>
               <div className="bg-primary text-white px-4 py-2 rounded-full text-sm font-semibold">
-                {doctorDetails.experience}
+                {doctorDetails.experience} years experience
               </div>
             </div>
 
@@ -142,6 +198,20 @@ export const Appointment = () => {
       <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg p-6 border border-gray-200">
         <h2 className="text-xl font-bold text-gray-900 mb-6">Choose a slot</h2>
 
+        {loading && (
+          <div className="text-center py-8">
+            <p className="text-gray-600">Loading available slots...</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-6">
+            {error}
+          </div>
+        )}
+
+        {!loading && !error && (
+          <>
         <div className="mb-6">
           <div className="flex gap-4 overflow-x-auto pb-2">
             {docSlots.map((slot, index) => (
@@ -197,11 +267,13 @@ export const Appointment = () => {
 
         <div className="mb-6">
           <label htmlFor="notes" className="block text-sm font-semibold text-gray-700 mb-2">
-            Notes 
+            Notes
           </label>
           <textarea
             id="notes"
             rows="4"
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
             className="w-full border-2 border-gray-300 rounded-lg p-3 text-sm focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
             placeholder="Add any notes or special requests for your appointment..."
           ></textarea>
@@ -210,10 +282,12 @@ export const Appointment = () => {
         <button
           onClick={handleBookAppointment}
           className="w-full md:w-auto bg-primary text-white px-8 py-3 rounded-full font-semibold hover:bg-primary/90 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
-          disabled={!slotTime}
+          disabled={!slotTime || bookingLoading}
         >
-          Book an appointment
+          {bookingLoading ? 'Booking...' : 'Book an appointment'}
         </button>
+        </>
+        )}
       </div>
 
 
@@ -227,10 +301,14 @@ export const Appointment = () => {
             >
               <div className='h-72 w-full bg-gray-50 overflow-hidden relative'>
                 <img
-                  src={doctor.image}
+                  src={doctor.profileImage}
                   alt={doctor.name}
                   className='w-full h-full object-cover object-top'
                 />
+
+                <div className='absolute top-4 right-4 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full group-hover:bg-white group-hover:text-primary transition-colors duration-300'>
+                  {doctor.experience} years experience
+                </div>
 
                 <div className='absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/40'>
                   <Link
@@ -243,9 +321,6 @@ export const Appointment = () => {
               </div>
 
               <div className='p-4 relative group-hover:bg-primary transition-colors duration-300'>
-                <div className='absolute top-4 right-4 bg-primary text-white text-xs font-medium px-3 py-1 rounded-full group-hover:bg-white group-hover:text-primary transition-colors duration-300'>
-                  {doctor.experience}
-                </div>
                 <h3 className='text-lg font-semibold text-gray-800 group-hover:text-white transition-colors duration-300'>{doctor.name}</h3>
                 <p className='text-sm text-gray-600 group-hover:text-white/90 transition-colors duration-300'>{doctor.speciality}</p>
               </div>

@@ -2,8 +2,8 @@ import * as doctorService from '../services/doctorService.js';
 
 export const getAllDoctors = async (req, res, next) => {
   try {
-    const { specialty } = req.query;
-    const result = await doctorService.getAllDoctors(specialty);
+    const { specialization } = req.query;
+    const result = await doctorService.getAllDoctors(specialization);
     res.status(200).json(result);
   } catch (error) {
     next(error);
@@ -19,9 +19,9 @@ export const getDoctorById = async (req, res, next) => {
   }
 };
 
-export const getSpecialties = async (req, res, next) => {
+export const getSpecializations = async (req, res, next) => {
   try {
-    const result = await doctorService.getAllSpecialties();
+    const result = await doctorService.getAllSpecializations();
     res.status(200).json(result);
   } catch (error) {
     next(error);
