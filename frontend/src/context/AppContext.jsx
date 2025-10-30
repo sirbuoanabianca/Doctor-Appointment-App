@@ -66,6 +66,8 @@ export const AppContextProvider = ({ children }) => {
       localStorage.setItem('user', JSON.stringify(userData));
     }
 
+    fetchDoctors();
+
   };
 
   const register = async (authToken, userData = null) => {
@@ -76,6 +78,8 @@ export const AppContextProvider = ({ children }) => {
       setUser(userData);
       localStorage.setItem('user', JSON.stringify(userData));
     }
+
+    fetchDoctors();
   };
 
   const logout = () => {
@@ -117,6 +121,7 @@ export const AppContextProvider = ({ children }) => {
   }, [token]);
 
   const value = {
+    API_URL,
     doctors,
     specializations,
     bookAppointment,

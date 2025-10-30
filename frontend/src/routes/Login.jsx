@@ -24,7 +24,11 @@ export const Login = () => {
       const response = await axios.post(`${API_URL}/api/user/login`, { email, password });
       if (response.data.success) {
         login(response.data.token, response.data.user);
-        navigate('/');
+        if (response.data.user.role === 'admin') {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        } 
       } else {
         setInvalidCredential(true);
         setErrorMessage([response.data.message || 'Invalid email or password']);

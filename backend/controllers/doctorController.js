@@ -37,15 +37,6 @@ export const addDoctor = async (req, res, next) => {
   }
 };
 
-export const updateDoctor = async (req, res, next) => {
-  try {
-    const result = await doctorService.updateDoctor(req.params.id, req.body, req.file);
-    res.status(200).json(result);
-  } catch (error) {
-    next(error);
-  }
-};
-
 export const deleteDoctor = async (req, res, next) => {
   try {
     const result = await doctorService.deleteDoctor(req.params.id);

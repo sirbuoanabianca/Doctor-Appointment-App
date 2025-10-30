@@ -1,11 +1,17 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { assets } from '../assets/frontend_assets/assets'
 import { MdEmail, MdLocationOn, MdPhone } from 'react-icons/md'
 
 
 
 export const Footer = () => {
+  const location = useLocation();
+
+  if (location.pathname === '/admin') {
+    return null;
+  }
+
   return (
     <div className='bg-gray-50 mt-20 '>
         <div className='max-w-7xl mx-auto px-4 sm:px-8 py-16'>

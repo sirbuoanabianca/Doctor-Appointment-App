@@ -43,9 +43,9 @@ export const getAllSpecializations = async () => {
 };
 
 export const addDoctor = async (doctorData, imageFile) => {
-  const { name, email, password, specialization, experience, degree, about, fees } = doctorData;
+  const { name, specialization, experience, degree, about, fees } = doctorData;
 
-  if (!name || !email || !password || !specialization || !experience || !degree || !about || !fees) {
+  if (!name || !specialization || !experience || !degree || !about || !fees) {
     throw new AppError('All fields are required', 400);
   }
 
@@ -53,16 +53,6 @@ export const addDoctor = async (doctorData, imageFile) => {
     throw new AppError('Profile image is required', 400);
   }
 
-  validateEmail(email);
-  validatePassword(password);
-
-  const existingDoctor = await doctorModel.findOne({ email });
-  if (existingDoctor) {
-    throw new AppError('Doctor already exists with this email', 400);
-  }
-
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(password, salt);
 
   const imageUrl = `/uploads/${imageFile.filename}`;
 
@@ -74,7 +64,7 @@ export const addDoctor = async (doctorData, imageFile) => {
     profileImage: imageUrl,
     about,
     fees,
-    
+  
   });
 
   return {
@@ -87,38 +77,6 @@ export const addDoctor = async (doctorData, imageFile) => {
       specialization: newDoctor.specialization,
       profileImage: newDoctor.profileImage,
     },
-  };
-};
-
-export const updateDoctor = async (doctorId, updateData, imageFile) => {
-  delete updateData.password;
-
-  if (imageFile) {
-    const oldDoctor = await doctorModel.findById(doctorId);
-    if (oldDoctor && oldDoctor.profileImage) {
-      const oldImagePath = path.join(process.cwd(), oldDoctor.profileImage);
-      if (fs.existsSync(oldImagePath)) {
-        fs.unlinkSync(oldImagePath);
-      }
-    }
-
-    updateData.profileImage = `/uploads/${imageFile.filename}`;
-  }
-
-  const updatedDoctor = await doctorModel.findByIdAndUpdate(
-    doctorId,
-    { $set: updateData },
-    { new: true, runValidators: true }
-  ).select('-password');
-
-  if (!updatedDoctor) {
-    throw new AppError('Doctor not found', 404);
-  }
-
-  return {
-    success: true,
-    message: 'Doctor updated successfully',
-    doctor: updatedDoctor,
   };
 };
 

@@ -12,6 +12,7 @@ import { Appointment } from './routes/Appointment'
 import { NavBar } from './components/NavBar'
 import { Footer } from './components/Footer'
 import { AppContextProvider } from './context/AppContext'
+import { Admin } from './routes/Admin'
 
 export const App = () => {
   return (
@@ -29,6 +30,7 @@ export const App = () => {
           <Route path='/user-profile' element={<UserProfile />} />
           <Route path='/user-appointments' element={<UserAppointments />} />
           <Route path='/appointment/:docId' element={<Appointment />} />
+          <Route path='/admin' element={<Admin />} />
         </Routes>
         <Footer />
       </div>

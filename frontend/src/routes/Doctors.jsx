@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
-import { specialityData } from '../assets/frontend_assets/assets'
 
 export const Doctors = () => {
   const { speciality } = useParams();
