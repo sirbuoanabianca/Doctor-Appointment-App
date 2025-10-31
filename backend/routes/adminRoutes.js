@@ -15,4 +15,13 @@ router.post('/addDoctor', authMiddleware, adminMiddleware, upload.single('profil
 
 router.delete('/:id', authMiddleware, adminMiddleware, doctorController.deleteDoctor);
 
+router.get('/appointments', authMiddleware, adminMiddleware, adminController.getAllAppointments);
+
+router.delete('/appointment/:id', authMiddleware, adminMiddleware, adminController.deleteAppointment);
+
+router.get('/patients', authMiddleware, adminMiddleware, adminController.getAllPatients);
+
+router.delete('/patient/:id', authMiddleware, adminMiddleware, adminController.deletePatient);
+
+
 export default router;

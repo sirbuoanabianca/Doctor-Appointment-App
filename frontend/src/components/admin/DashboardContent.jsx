@@ -50,12 +50,12 @@ export const DashboardContent = ({ stats }) => {
           </div>
         </div>
 
-        {/* Appointments today */}
+        {/* Appointments tomorrow */}
         <div className="bg-white rounded-lg shadow-md p-6 border-l-4 border-primary hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-gray-500 text-sm font-medium uppercase mb-1">Today</p>
-              <p className="text-3xl font-bold text-gray-900">{stats?.appointments?.today || 0}</p>
+              <p className="text-gray-500 text-sm font-medium uppercase mb-1">Tomorrow</p>
+              <p className="text-3xl font-bold text-gray-900">{stats?.appointments?.tomorrow || 0}</p>
             </div>
             <div className="bg-primary/10 rounded-full p-3">
               <svg className="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -66,10 +66,10 @@ export const DashboardContent = ({ stats }) => {
         </div>
       </div>
 
-      {/* Appointments Chart */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        {/* Bar Chart: This week vs this Month */}
-        <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+      {/* Appointments chart */}
+      <div className="flex flex-wrap gap-6 mb-8">
+        {/* Bar chart: This week vs this Month */}
+        <div className="flex-1 min-w-[300px] bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold text-gray-900">Scheduled appointments</h3>
           </div>
@@ -80,6 +80,38 @@ export const DashboardContent = ({ stats }) => {
               { name: 'This Week', count: week },
               { name: 'This Month', count: month },
             ];
+            return (
+              <div className="h-64">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={data} margin={{ top: 8, right: 16, left: 0, bottom: 8 }}>
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                    <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+                    <YAxis allowDecimals={false} tick={{ fontSize: 12 }} />
+                    <Tooltip cursor={{ fill: 'rgba(0,0,0,0.03)' }} />
+                    <Bar dataKey="count" radius={[6, 6, 0, 0]} fill="#c61734">
+                      <LabelList dataKey="count" position="top" formatter={(v) => v} />
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            );
+          })()}
+        </div>
+
+        {/* Bar chart per specialization this month*/}
+        <div className="flex-1 min-w-[300px] bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">Appointments per specialization this month</h3>
+          </div>
+          {(() => {
+            const data = [];
+            stats?.appointmentsBySpecialization?.forEach(element => {
+              data.push({
+                name: element.specialization,
+                count: element.count,
+              });
+            });
+
             return (
               <div className="h-64">
                 <ResponsiveContainer width="100%" height="100%">

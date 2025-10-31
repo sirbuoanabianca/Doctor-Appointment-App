@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { DashboardContent } from '../components/admin/DashboardContent'
 import { DoctorsContent } from '../components/admin/DoctorsContent'
+import { AppointmentsContent } from '../components/admin/AppointmentsContent'
+import { PatientsContent } from '../components/admin/PatientsContent'
 
 const API_URL = import.meta.env.SERVER_API_URL || 'http://localhost:5000';
 
@@ -17,8 +19,11 @@ export const Admin = () => {
 
   const [allDoctors, setAllDoctors] = useState([]);
   const [allAppointments, setAllAppointments] = useState([]);
+  const [allPatients, setAllPatients] = useState([]);
+
   const [doctorsLoading, setDoctorsLoading] = useState(false);
   const [appointmentsLoading, setAppointmentsLoading] = useState(false);
+  const [patientsLoading, setPatientsLoading] = useState(false);
 
   const tabs = [
     { id: 'dashboard', name: 'Dashboard'},
@@ -48,6 +53,7 @@ export const Admin = () => {
 
       if (response.data.success) {
         setStats(response.data.stats);
+        console.log('Dashboard Stats:', response.data.stats);
       }
     } catch (err) {
       console.error('Error fetching dashboard stats:', err);
@@ -119,6 +125,32 @@ export const Admin = () => {
     }
   };
 
+  const fetchAllPatients = async () => {
+    if (!token) return;
+
+    try {
+      setPatientsLoading(true);
+
+      const response = await axios.get(
+        `${API_URL}/api/admin/patients`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+        if (response.data.success) {
+          setAllPatients(response.data.patients);
+          console.log(response.data.patients);
+        }
+      } catch (err) {
+        console.error('Error fetching patients:', err);
+      } finally {
+        setPatientsLoading(false);
+      }
+  };
+
   const handleDeleteDoctor = async (doctorId) => {
     try {
       const response = await axios.delete(
@@ -142,6 +174,54 @@ export const Admin = () => {
     }
   };
 
+  const handleDeleteAppointment = async (appointmentId) => {
+    try {
+      const response = await axios.delete(
+        `${API_URL}/api/admin/appointment/${appointmentId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data.success) {
+        setAllAppointments(allAppointments.filter(app => app._id !== appointmentId));
+        alert('Appointment deleted successfully');
+
+        fetchDashboardStats();
+      }
+    } catch (err) {
+      console.error('Error deleting appointment:', err);
+      alert(err.response?.data?.message || 'Failed to delete appointment');
+    }
+  };
+
+  const handleDeletePatient = async (patientId) => {
+    try {
+      const response = await axios.delete(
+        `${API_URL}/api/admin/patient/${patientId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data.success) {
+        setAllPatients(allPatients.filter(pat => pat._id !== patientId));
+        alert('Patient deleted successfully');
+
+        fetchDashboardStats();
+      }
+    } catch (err) {
+      console.error('Error deleting patient:', err);
+      alert(err.response?.data?.message || 'Failed to delete patient');
+    }
+  };
+
+          
+
   const handleDoctorAdded = () => {
 
     fetchAllDoctors();
@@ -160,12 +240,20 @@ export const Admin = () => {
   useEffect(() => {
     if (!token || !user) return;
 
+    if (activeTab === 'dashboard') {
+      fetchDashboardStats();
+    }
+
     if (activeTab === 'doctors' && allDoctors.length === 0) {
       fetchAllDoctors();
     }
 
-    if (activeTab === 'appointments' && allAppointments.length === 0) {
+    if (activeTab === 'appointments') {
       fetchAllAppointments();
+    }
+
+    if (activeTab === 'users' && allPatients.length === 0) {
+      fetchAllPatients();
     }
   }, [activeTab, token, user]);
 
@@ -177,18 +265,10 @@ export const Admin = () => {
       case 'doctors':
         return <DoctorsContent doctors={allDoctors} onDeleteDoctor={handleDeleteDoctor} onDoctorAdded={handleDoctorAdded} />;
       case 'appointments':
-        return (
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Appointments</h2>
-            <p className="text-gray-600">Appointment management functionality coming soon...</p>
-          </div>
-        );
+        return <AppointmentsContent appointments={allAppointments} onDeleteAppointment={handleDeleteAppointment} />;
       case 'users':
         return (
-          <div className="bg-white rounded-lg shadow-md p-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Patients</h2>
-            <p className="text-gray-600">Patient management functionality coming soon...</p>
-          </div>
+          <PatientsContent patients={allPatients} onDeletePatient={handleDeletePatient} />
         );
       default:
         return <DashboardContent stats={stats} />;

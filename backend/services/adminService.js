@@ -21,6 +21,45 @@ export const getAllAppointments = async () => {
   }
 };
 
+export const getAllPatients = async () => {
+  try {
+    const patients = await userModel.find({ role: 'user' });
+    return {
+      success: true,
+      patients,
+    };
+  } catch (error) {
+    console.error('Error fetching all patients:', error);
+    throw new AppError('Failed to fetch patients', 500);
+  }
+};
+
+export const deleteAppointment = async (appointmentId) => {
+  try {
+    const appointment = await appointmentModel.findByIdAndDelete(appointmentId);
+    return {
+      success: true,
+      appointment,
+    };
+  } catch (error) {
+    console.error('Error deleting appointment:', error);
+    throw new AppError('Failed to delete appointment', 500);
+  }
+};
+
+export const deletePatient = async (patientId) => {
+  try {
+    const patient = await userModel.findByIdAndDelete(patientId);
+    return {
+      success: true,
+      patient,
+    };
+  } catch (error) {
+    console.error('Error deleting patient:', error);
+    throw new AppError('Failed to delete patient', 500);
+  }
+};
+
 export const getDashboardStats = async () => {
   try {
     const totalDoctors = await doctorModel.countDocuments();
@@ -33,6 +72,9 @@ export const getDashboardStats = async () => {
     const tomorrow = new Date(today);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
+    const dayAfterTomorrow = new Date(tomorrow);
+    dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+
     const startOfWeek = new Date(today);
     startOfWeek.setDate(today.getDate() - today.getDay());
 
@@ -41,12 +83,12 @@ export const getDashboardStats = async () => {
 
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1); 
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 1);
 
-    const appointmentsToday = await appointmentModel.countDocuments({
+    const appointmentsTomorrow = await appointmentModel.countDocuments({
       date: {
-        $gte: today,
-        $lt: tomorrow,
+        $gte: tomorrow,
+        $lt: dayAfterTomorrow,
       },
     });
 
@@ -66,17 +108,56 @@ export const getDashboardStats = async () => {
 
     const totalAppointments = await appointmentModel.countDocuments();
 
+    const appointmentsThisMonthBySpecialization = await appointmentModel.aggregate([
+      {
+        $match: {
+          date: {
+            $gte: startOfMonth,
+            $lt: endOfMonth,
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'doctors',
+          localField: 'doctorId',
+          foreignField: '_id',
+          as: 'doctor',
+        },
+      },
+      {
+        $unwind: '$doctor',
+      },
+      {
+        $group: {
+          _id: '$doctor.specialization',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { count: -1 },
+      },
+      {
+        $project: {
+          _id: 0,
+          specialization: '$_id',
+          count: 1,
+        },
+      },
+    ]);
+
     return {
       success: true,
       stats: {
         totalDoctors,
         totalUsers,
         appointments: {
-          today: appointmentsToday,
+          tomorrow: appointmentsTomorrow,
           thisWeek: appointmentsThisWeek,
           thisMonth: appointmentsThisMonth,
           total: totalAppointments,
         },
+        appointmentsBySpecialization: appointmentsThisMonthBySpecialization,
       },
     };
   } catch (error) {
