@@ -1,14 +1,24 @@
 import React, { useContext, useState, useEffect } from 'react'
 import { AppContext } from '../context/AppContext'
 import axios from 'axios'
+import { loadStripe } from '@stripe/stripe-js'
+import { StripePaymentModal } from '../components/StripePaymentModal'
 
 const API_URL = import.meta.env.SERVER_API_URL || 'http://localhost:5000';
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY || 'pk_test_your_publishable_key');
 
 export const UserAppointments = () => {
   const { token } = useContext(AppContext);
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [paymentModal, setPaymentModal] = useState({
+    isOpen: false,
+    appointmentId: null,
+    amount: null,
+    doctorName: null,
+  });
 
   const fetchUserAppointments = async () => {
     if (!token) {
@@ -71,6 +81,35 @@ export const UserAppointments = () => {
       console.error('Error cancelling appointment:', err);
       alert(err.response?.data?.message || 'Failed to cancel appointment');
     }
+  };
+
+  const handlePayment = (appointmentId, amount, doctorName) => {
+    setPaymentModal({
+      isOpen: true,
+      appointmentId,
+      amount,
+      doctorName,
+    });
+  };
+
+  const handlePaymentSuccess = () => {
+    setPaymentModal({
+      isOpen: false,
+      appointmentId: null,
+      amount: null,
+      doctorName: null,
+    });
+    alert('Payment successful!');
+    fetchUserAppointments();
+  };
+
+  const handlePaymentCancel = () => {
+    setPaymentModal({
+      isOpen: false,
+      appointmentId: null,
+      amount: null,
+      doctorName: null,
+    });
   };
 
   const formatDate = (dateString) => {
@@ -162,12 +201,18 @@ export const UserAppointments = () => {
               </div>
 
               <div className="flex gap-4 ml-12">
-                <button
-                  className="bg-primary text-white font-semibold rounded-lg px-6 py-3 hover:bg-primary/90 transition-colors"
-                  onClick={() => alert('Payment feature coming soon!')}
-                >
-                  Pay online
-                </button>
+                {appointment.paymentStatus === 'pay at clinic' ? (
+                  <button
+                    className="bg-primary text-white font-semibold rounded-lg px-6 py-3 hover:bg-primary/90 transition-colors"
+                    onClick={() => handlePayment(appointment._id, appointment.doctorId.fees, appointment.doctorId.name)}
+                  >
+                    Pay online
+                  </button>
+                ) : (
+                  <span className="bg-green-100 text-green-700 font-semibold rounded-lg px-6 py-3">
+                    Paid
+                  </span>
+                )}
                 <button
                   className="bg-red-500/10 font-semibold text-red-600 rounded-lg px-6 py-3 hover:bg-red-500/20 transition-colors"
                   onClick={() => handleCancelAppointment(appointment._id)}
@@ -179,6 +224,17 @@ export const UserAppointments = () => {
           ))}
         </div>
       )}
+
+      <StripePaymentModal
+        isOpen={paymentModal.isOpen}
+        appointmentId={paymentModal.appointmentId}
+        amount={paymentModal.amount}
+        doctorName={paymentModal.doctorName}
+        token={token}
+        stripePromise={stripePromise}
+        onSuccess={handlePaymentSuccess}
+        onClose={handlePaymentCancel}
+      />
     </div>
   )
 }

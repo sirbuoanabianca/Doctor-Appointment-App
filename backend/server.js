@@ -8,6 +8,7 @@ import userRoutes from './routes/userRoutes.js'
 import doctorRoutes from './routes/doctorRoutes.js'
 import appointmentRoutes from './routes/appointmentRoutes.js'
 import adminRoutes from './routes/adminRoutes.js'
+import paymentRoutes from './routes/paymentRoutes.js'
 
 dotenv.config()
 
@@ -28,6 +29,7 @@ app.use('/api/user', userRoutes)
 app.use('/api/doctor', doctorRoutes)
 app.use('/api/appointment', appointmentRoutes)
 app.use('/api/admin', adminRoutes)
+app.use('/api/payment', paymentRoutes)
 
 
 // Error handling middleware
